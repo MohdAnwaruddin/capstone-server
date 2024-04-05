@@ -32,19 +32,28 @@ app.use(helmet
 const auth = require('./middleware/auth.js');
 
 const { connect } = require('./Database_mongoose.js');
+
 require('dotenv').config();
 
-const MONGO_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}`;
+// const MONGO_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}`;
 
-mongoose
-    .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log(`MongoDB connected ${MONGO_URI}`);
-        startServer();
-    })
-    .catch(err => console.log(err));
 
-function startServer() {
+connect().then(() => {
+
+    console.log("Connected to MongoDB");
+  }).catch(err => {
+    console.error('Failed to connect to MongoDB', err);
+    process.exit(1);
+  });
+
+    // connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    // .then(() => {
+    //     console.log(`MongoDB connected ${MONGO_URI}`);
+        
+    // })
+    // .catch(err => console.log(err));
+
+
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
 
@@ -82,4 +91,4 @@ function startServer() {
     app.listen(PORT, () => {
         console.log(`Server started on port ${PORT}`);
     });
-}
+

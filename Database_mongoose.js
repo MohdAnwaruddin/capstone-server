@@ -1,17 +1,38 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
+// require('dotenv').config();
+// const mongoose = require('mongoose');
+// const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}`;
+
+// let client;
+
+// async function connect() {
+//   try {
+//   await mongoose.connect(uri);
+//   return mongoose;
+//  } catch (e) {
+//  console.error(e);
+//   throw e; // Rethrow the error for the caller to handle
+//  }
+// }
+
+// module.exports = { connect };
+
+
+import dotenv from 'dotenv';
+dotenv.config();
+import  mongoose from 'mongoose';
+
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}`;
 
-let client;
+const connect = async () => {
+    try{
 
-async function connect() {
-  try {
-  await mongoose.connect(uri);
-  return mongoose;
- } catch (e) {
- console.error(e);
-  throw e; // Rethrow the error for the caller to handle
- }
+        await mongoose.connect(uri)
+        return mongoose;
+    }
+    catch (e) {
+            console.error(e);
+            throw e;
+    }
+    
 }
-
-module.exports = { connect };
+export default connect
