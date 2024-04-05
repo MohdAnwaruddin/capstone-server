@@ -1,5 +1,7 @@
 const express = require('express');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const mongoose = require('mongoose');
 const app = express();
 const cors = require('cors');
 const User = require('./models/user.js');
@@ -8,66 +10,43 @@ const LocalStrategy = require('passport-local');
 const bodyParser = require('body-parser');
 const passport = require('./passport_local_strategy.js');
 const newsRoutes = require('./routes/newsRoutes.js');
-const helmet = require('helmet')
-import   connect   from "./Database_mongoose.js";
-
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors(
-    {
-        origin: '*' ,
-allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept',
-    }
-
-));
-
-app.use(helmet
-    ({
-    referrerPolicy: { policy: 'no-referrer-when-downgrade' }
-  })
-  );
-
-
+app.use(cors());
 const auth = require('./middleware/auth.js');
 
-// const connect  = require('./Database_mongoose.js');
-
+const { connect } = require('./Database_mongoose.js');
 require('dotenv').config();
 
-// const MONGO_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}`;
+const MONGO_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}`;
 
+mongoose
+    .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log(`MongoDB connected ${MONGO_URI}`);
+        startServer();
+    })
+    .catch(err => console.log(err));
 
-connect().then(() => {
-
-    console.log("Connected to MongoDB");
-  }).catch(err => {
-    console.error('Failed to connect to MongoDB', err);
-    process.exit(1);
-  });
-
-    // connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    // .then(() => {
-    //     console.log(`MongoDB connected ${MONGO_URI}`);
-        
-    // })
-    // .catch(err => console.log(err));
-
-
-    // app.use(express.json());
+function startServer() {
+    app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
 
-   
+    const store = MongoStore.create({
+        mongoUrl: MONGO_URI,
+        collectionName: 'sessions'
+    });
 
     // Express Session
-    // app.use(
-    //     session({
-    //         secret: 'very secret this is',
-    //         resave: false,
-    //         saveUninitialized: true,
-    //         store: store
-    //     })
-    // );
+    app.use(
+        session({
+            secret: 'very secret this is',
+            resave: false,
+            saveUninitialized: true,
+            store: store
+        })
+    );
 
     app.use(passport.initialize());
     app.use(passport.session());
@@ -84,8 +63,8 @@ connect().then(() => {
 
     app.use('/api/news', newsRoutes);
 
-    const PORT = process.env.PORT || 8000;
-    app.listen(PORT, () => {
-        console.log(`Server started on port ${PORT}`);
-    });
-
+    // const PORT = process.env.PORT || 8000;
+    // app.listen(PORT, () => {
+    //     console.log(`Server started on port ${PORT}`);
+    // });
+}

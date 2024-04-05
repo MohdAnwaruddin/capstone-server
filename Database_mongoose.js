@@ -17,22 +17,19 @@
 // module.exports = { connect };
 
 
-import dotenv from 'dotenv';
-dotenv.config();
-import  mongoose from 'mongoose';
+require('dotenv').config();
+const mongoose = require('mongoose');
 
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}`;
 
 const connect = async () => {
-    try{
-
-        await mongoose.connect(uri)
+    try {
+        await mongoose.connect(uri);
         return mongoose;
+    } catch (e) {
+        console.error(e);
+        throw e;
     }
-    catch (e) {
-            console.error(e);
-            throw e;
-    }
-    
-}
-export default connect
+};
+
+module.exports = connect;
