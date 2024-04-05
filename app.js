@@ -10,7 +10,7 @@ const LocalStrategy = require('passport-local');
 const bodyParser = require('body-parser');
 const passport = require('./passport_local_strategy.js');
 const newsRoutes = require('./routes/newsRoutes.js');
-
+const helmet = require('helmet')
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
@@ -21,6 +21,14 @@ allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept',
     }
 
 ));
+
+app.use(helmet
+    ({
+    referrerPolicy: { policy: 'no-referrer-when-downgrade' }
+  })
+  );
+
+
 const auth = require('./middleware/auth.js');
 
 const { connect } = require('./Database_mongoose.js');
