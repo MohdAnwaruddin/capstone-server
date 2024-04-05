@@ -1,7 +1,5 @@
 const express = require('express');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
-const mongoose = require('mongoose');
 const app = express();
 const cors = require('cors');
 const User = require('./models/user.js');
@@ -54,13 +52,10 @@ connect().then(() => {
     // .catch(err => console.log(err));
 
 
-    app.use(express.json());
+    // app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
 
-    const store = MongoStore.create({
-        mongoUrl: MONGO_URI,
-        collectionName: 'sessions'
-    });
+   
 
     // Express Session
     app.use(
