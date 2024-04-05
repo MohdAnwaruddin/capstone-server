@@ -9,6 +9,8 @@ const bodyParser = require('body-parser');
 const passport = require('./passport_local_strategy.js');
 const newsRoutes = require('./routes/newsRoutes.js');
 const helmet = require('helmet')
+import   connect   from "./Database_mongoose.js";
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
@@ -29,7 +31,7 @@ app.use(helmet
 
 const auth = require('./middleware/auth.js');
 
-const { connect } = require('./Database_mongoose.js');
+// const connect  = require('./Database_mongoose.js');
 
 require('dotenv').config();
 
@@ -58,14 +60,14 @@ connect().then(() => {
    
 
     // Express Session
-    app.use(
-        session({
-            secret: 'very secret this is',
-            resave: false,
-            saveUninitialized: true,
-            store: store
-        })
-    );
+    // app.use(
+    //     session({
+    //         secret: 'very secret this is',
+    //         resave: false,
+    //         saveUninitialized: true,
+    //         store: store
+    //     })
+    // );
 
     app.use(passport.initialize());
     app.use(passport.session());
