@@ -13,7 +13,9 @@ const newsRoutes = require('./routes/newsRoutes.js');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'https://capstone-client-xi.vercel.app',
+  }));
 const auth = require('./middleware/auth.js');
 
 const { connect } = require('./Database_mongoose.js');
